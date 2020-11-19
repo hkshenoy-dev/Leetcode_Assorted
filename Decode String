@@ -1,0 +1,45 @@
+class Solution {
+public:
+    string get_string(string s,int st,int en){
+       if(st>en) return "";
+        
+       if(s[st]>='a' and s[st]<='z') return s[st]+get_string(s,st+1,en);
+          
+       int rep=0;
+       
+       while(st<=en){
+           if(s[st]-'0'>=0 && s[st]-'0'<=9)rep=rep*10+(s[st]-'0');
+           else {
+               break;
+           }
+           st++;
+       }    
+    
+        
+       stack<int> p;
+       p.push(st);
+       int nx_en=-1;
+            
+       for(int j=st+1;j<=en;j++){
+             if(s[j]=='[') p.push(j);
+             else if(s[j]==']'){
+                    if(p.top()==st){
+                        nx_en=j;
+                        break;
+                }
+                    p.pop();
+            }
+     }
+     
+     string u=get_string(s,st+1,nx_en-1);
+     string sol;
+     for(int i=0;i<rep;i++)sol+=u; 
+     return sol+get_string(s,nx_en+1,en);
+            
+        
+    }
+    string decodeString(string s) {
+        int n=s.size();
+        return get_string (s,0,n-1);
+    }
+};

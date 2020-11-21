@@ -1,0 +1,58 @@
+#define ll long long
+class Solution {
+public:
+    int valid[11];
+
+  
+    ll get_cnt(ll a,ll n){
+        int res=1;
+        while(n){
+            if(n%2)res=res*a;
+            n/=2;
+            a*=a;
+        }
+        return res;
+    }
+    
+    int solve(vector<int> dig){
+        ll ans=0;
+        ll po=0;
+        for(int i=1;i<=9;i++)po=po+valid[i];
+        ll l=dig.size();
+       
+        
+        for(int i=1;i<l;i++)ans+=get_cnt(po,i);
+        
+    
+        for(int i=0;i<l;i++){
+          for(int j=1;j<=9;j++){
+              if(valid[j] && j<dig[i])ans+=get_cnt(po,l-i-1);
+          }
+            
+          if(valid[dig[i]]==0)break;  
+          if(valid[dig[i]]==1 and i==l-1)ans++;
+        }
+        return ans;
+        
+       
+    }
+    int atMostNGivenDigitSet(vector<string>& digits, int n) {
+        
+        memset(valid,0,sizeof(valid));
+        vector<int> dig;
+        
+        while(n){
+            dig.push_back(n%10);
+            n/=10;
+        }
+        reverse(dig.begin(),dig.end());
+        
+     
+        
+        
+        int m=digits.size();
+        for(int i=0;i<m;i++)valid[digits[i][0]-'0']=1;
+        return (int)solve(dig);
+        
+    }
+};

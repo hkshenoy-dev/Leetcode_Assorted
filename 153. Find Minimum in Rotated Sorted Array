@@ -1,0 +1,16 @@
+class Solution {
+public:
+    int get_min(vector<int> num,int l,int r){
+        if(l>r)return INT_MAX;
+        int m=(l+r)/2;
+        if(l==r)return num[l];
+        if(num[r]<num[m]) return min(num[m],get_min(num,m+1,r));
+        if(num[m]<num[r]) return min(num[m],get_min(num,l,m-1));
+        return num[l];
+    }
+    int findMin(vector<int>& nums) {
+        int n=nums.size();
+        
+        return get_min(nums,0,n-1);
+    }
+};

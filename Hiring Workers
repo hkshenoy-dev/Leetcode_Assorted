@@ -1,0 +1,122 @@
+#include<bits/stdc++.h>
+#include <iterator>
+#include <iostream>
+#include <numeric>
+#include <math.h>
+#define ll  long long
+#define ull long
+#define mpa make_pair
+#define pb push_back
+#define ff first
+#define pii pair<ll,ll>
+#define dd double
+#define trace(x) cerr << #x << " : " << x << endl
+#define ss second
+#define boost ios_base::sync_with_stdio(0)
+#define forp(i,a,b) for(ll i=a;i<=b;i++)
+#define rep(i,n)    for(ll i=0;i<n;++i)
+#define ren(i,n)    for(ll i=n-1;i>=0;i--)
+#define forn(i,a,b) for(ll i=a;i>=b;i--)
+#define all(c) (c).begin(),(c).end()
+#define tr(c,i) for(typeof((c).begin()) i = (c).begin(); i != (c).end();
+#define sc(x) scanf("%lld",&x)
+#define clr(x,val) memset(x,val,sizeof(x))
+#define pr(x) printf("%lld\n",x) 
+#define gc getchar
+#define pdd pair<dd,dd>
+#define read_arr(a,n) for(ll i=1;i<=n;i++)cin>>a[i];
+#define init_arr(a,n) for(ll i=1;i<=n;i++)a[i]=n-i+1;
+#define prec(x) cout<<fixed<<setprecision(x)
+#define fre freopen("input.txt","r",stdin),freopen("output.txt","w",stdout)
+#define arr array 
+using namespace std;
+ll dp[(1<<10)+5][15];
+ll memo[(1<<10)+5][15];
+ll lim=0;
+vector<ll> part;
+ll solve(ll mask,ll cnt){
+	if(mask==lim) return cnt;
+	if(cnt==0){
+		if(mask<lim)return 1e18;
+		return 0;
+	}
+	if(memo[mask][cnt])return dp[mask][cnt];
+	memo[mask][cnt]=1;
+	ll res=1e18;
+	
+	ll n=part.size();
+	vector<ll> ze_ind;
+	for(ll i=0;i<n;i++) if((mask & (1ll<<i))==0) ze_ind.pb(i);
+		
+	
+	n=ze_ind.size();
+	
+	for(ll i=1;i<(1ll<<n);i++){
+		ll num=1;
+		ll m_=mask;
+		for(ll j=0;j<n;j++) if( i & (1ll<<j) )num=num*part[ze_ind[j]],m_=(m_|(1ll<<ze_ind[j]));
+	
+  		res=min(res,num+solve(m_,cnt-1));
+	}
+	
+	return dp[mask][cnt]=res;
+}
+ll get_num(ll a,ll n){
+	ll res=1;
+	while(n){
+		if(n%2)res=res*a;
+		n/=2;
+		a*=a;
+	}
+	return res;
+}
+ll get_sol(vector<ll> num,ll k){
+	ll noe=num.size();
+	lim=(1ll<<noe)-1;
+	part=num;
+	memset(memo,0,sizeof(memo));
+
+	return solve(0,k);
+	
+	
+}
+
+int main(){
+	ll t;
+	cin>>t;
+	while(t--){
+		ll k,x;
+		cin>>k>>x;
+		vector<pii> fac_map;
+		
+		for(ll i=2;i*i<=x;i++){
+			if(x%i==0){
+				ll c=0;
+				while(x%i==0){
+					c++;
+					x/=i;
+				}
+				fac_map.pb({i,c});
+			}
+		}
+		
+		if(x>1)fac_map.pb({x,1});
+		
+		ll ans=0;
+		if(fac_map.size()<=k){
+			ll u=k-fac_map.size();
+			ans=u;
+			for(ll i=0;i<fac_map.size();i++) ans+=get_num(fac_map[i].ff,fac_map[i].ss);
+			cout<<ans<<endl;
+			
+		}else{
+			vector<ll> orig_num;
+			for(ll i=0;i<fac_map.size();i++)orig_num.pb(get_num(fac_map[i].ff,fac_map[i].ss));
+			cout<<get_sol(orig_num,k)<<endl;
+		}
+	}
+}
+	
+
+
+		

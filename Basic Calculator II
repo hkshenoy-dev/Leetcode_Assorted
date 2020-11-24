@@ -1,0 +1,94 @@
+class Solution {
+public:
+    bool is_op(char ch){
+        if(ch=='+' or ch=='-' or ch=='/' or ch=='*')return 1;
+        return 0;
+    }
+    
+    bool is_dig(char ch){
+        if(ch-'0'>=0 and ch-'0'<=9)return 1;
+        return 0;
+    }
+    
+    int get_num(string x){
+        int s=0;
+        for(int i=0;i<x.size();i++) s=s*10+(x[i]-'0');
+        return s;
+    }
+    
+    int get_prec(char ch){
+        if(ch=='+' or ch=='-')return 1;
+        else return 2;
+    }
+    
+    int calculate(string s) {
+        
+        int st=0;
+        int n=s.size();
+        
+        vector< pair<string,int> >expr; 
+        stack<char>op;
+        
+        //converting to postfix
+        while(st<n){
+            if(is_op(s[st])){
+                
+                string y="";
+                while(op.size() and get_prec(op.top()) >= get_prec(s[st])){
+                    y=y+op.top();
+                    expr.push_back({y,1});
+                    y="";
+                    op.pop();
+                }
+                op.push(s[st]);
+                st++;
+                
+            }else if(is_dig(s[st])){
+                
+                string x;
+                while(is_dig(s[st])){
+                    x+=s[st];
+                    st++;
+                }
+                expr.push_back({x,0});
+                
+            }else{
+                st++;
+            }
+        }
+        
+        while(op.size()){
+            string y;
+            y+=op.top();
+            expr.push_back({y,1});
+            op.pop();
+        }
+        
+        
+        n=expr.size();
+        stack<int> post_eval;
+        
+        for(int i=0;i<n;i++){
+            if(expr[i].second==0){
+                post_eval.push(get_num(expr[i].first));
+                cout<<get_num(expr[i].first)<<endl;
+            }else{
+                int v1=post_eval.top();
+                post_eval.pop();
+                int v2=post_eval.top();
+                post_eval.pop();
+                cout<<v1<<" "<<v2<<" "<<expr[i].first<<endl;
+                if(expr[i].first=="+")post_eval.push(v1+v2);
+                if(expr[i].first=="-")post_eval.push(v2-v1);
+                if(expr[i].first=="/")post_eval.push(v2/v1);
+                if(expr[i].first=="*")post_eval.push(v1*v2);
+            }
+            
+        
+        }
+        return post_eval.top();
+        
+        
+        
+    }
+};

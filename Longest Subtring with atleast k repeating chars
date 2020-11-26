@@ -1,0 +1,40 @@
+#define pb push_back
+class Solution {
+public:
+    vector< vector<int> > freq;
+    string q;
+    int solve(int l,int r,int k){
+        if(l>r)return 0;
+        vector<int> ind_chk;
+        
+        for(int i=l;i<=r;i++){
+          int cnt=freq[q[i]-'a'][r];
+          if(l>0)cnt-=freq[q[i]-'a'][l-1];
+          if(cnt < k)ind_chk.pb(i);  
+        }
+        if(ind_chk.size()==0)return r-l+1;
+        int ans=0;
+        
+    
+        ans=max(ans,solve(l,ind_chk[0]-1,k));
+        for(int i=0;i<ind_chk.size()-1;i++) ans=max(ans,solve(ind_chk[i]+1,ind_chk[i+1]-1,k));
+        
+        int x=ind_chk.size();
+        ans=max(ans,solve(ind_chk[x-1]+1,r,k));
+            
+      return ans;
+    }
+    
+    int longestSubstring(string s, int k) {
+        int n=s.size();
+        q=s;
+        for(int i=0;i<26;i++){
+            vector<int> temp(n,0);
+            temp[0]=(s[0]==char('a'+i));
+            for(int j=1;j<n;j++)temp[j]=temp[j-1]+(s[j]==char('a'+i));
+            freq.pb(temp);
+        }
+        return solve(0,n-1,k);
+
+    }
+};

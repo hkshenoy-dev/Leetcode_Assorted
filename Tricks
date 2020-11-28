@@ -1,0 +1,3 @@
+Initilizing n*m vector c++
+vector<vector<int>> vec( n , vector<int> (m, 0)); 
+ 

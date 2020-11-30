@@ -1,0 +1,50 @@
+class Solution {
+public:
+    vector<vector<int>> getSkyline(vector<vector<int>>& buildings) {
+      set<int> x_cord;
+      multiset<int> mh_h;
+      int prev_h=0,curr_h;
+      vector< vector <int> > sol;
+      map<int,vector< pair<int,int> > > help;
+      int n=buildings.size();
+        
+      for(int i=0;i<n;i++){
+          
+          int l=buildings[i][0];
+          int r=buildings[i][1];
+          int z=buildings[i][2];
+          
+          x_cord.insert(l);
+          x_cord.insert(r);
+          help[l].push_back({1,z});
+          help[r].push_back({-1,z});
+          
+      }
+        
+      for(auto x:x_cord){
+          
+          for(auto ev:help[x]){
+              
+              if(ev.first==1) mh_h.insert(ev.second);
+              else  mh_h.erase(mh_h.find(ev.second));
+              
+         }
+          
+          if(mh_h.size()==0){
+              curr_h=0;
+          }else{
+              auto l_h=mh_h.end();
+              l_h--;
+              curr_h=*l_h;
+          }
+          if(curr_h == prev_h) continue;
+          sol.push_back({x,curr_h});
+          prev_h=curr_h;
+          
+          
+      }
+        return sol;
+        
+        
+    }
+};
